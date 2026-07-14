@@ -171,6 +171,7 @@
     font-size: 1.05rem;
     color: var(--primary);
     font-weight: 700;
+    white-space: nowrap;
   }
   .logo-text .lt-sub {
     font-size: 0.72rem;
@@ -184,16 +185,17 @@
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
   .nav-links a {
-    padding: 10px 18px;
+    padding: 9px 14px;
     color: var(--gray-800);
     font-weight: 500;
     font-size: 0.95rem;
     border-radius: 6px;
     transition: var(--transition);
     position: relative;
+    white-space: nowrap;
   }
   .nav-links a::after {
     content: "";
@@ -818,9 +820,13 @@
   }
 
   .leadership-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 28px;
+  }
+  .leadership-grid .leader-card {
+    flex: 0 1 360px;
   }
   .leader-card {
     background: var(--white);
@@ -876,8 +882,25 @@
   .leader-card p {
     color: var(--gray-600);
     font-size: 0.92rem;
-    line-height: 1.65;
+    line-height: 1.7;
     position: relative;
+    font-style: italic;
+    margin-top: 20px;
+    padding-top: 26px;
+    border-top: 1px solid var(--gray-200);
+  }
+  .leader-card p::before {
+    content: "\201C";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Amiri', serif;
+    font-size: 2.6rem;
+    line-height: 1;
+    color: var(--accent);
+    background: var(--white);
+    padding: 0 12px;
   }
 
   /* ---------- QURBANI 2026 SECTION ---------- */
@@ -1494,8 +1517,10 @@
     color: var(--gray-600);
     font-size: 0.95rem;
     line-height: 1.5;
+    overflow-wrap: anywhere;
   }
   .contact-item a:hover { color: var(--accent); }
+  .contact-grid > *, .contact-item > div { min-width: 0; }
 
   .map-wrap {
     border-radius: 12px;
@@ -1536,7 +1561,8 @@
     font-weight: 500;
   }
   .form-group input,
-  .form-group textarea {
+  .form-group textarea,
+  .form-group select {
     width: 100%;
     padding: 12px 16px;
     border: 1.5px solid var(--gray-200);
@@ -1547,8 +1573,13 @@
     transition: var(--transition);
     background: var(--off-white);
   }
+  .form-group select { cursor: pointer; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+  .form-group select:invalid { color: var(--gray-400); }
   .form-group input:focus,
-  .form-group textarea:focus {
+  .form-group textarea:focus,
+  .form-group select:focus {
     outline: none;
     border-color: var(--accent);
     background: var(--white);
@@ -1588,6 +1619,74 @@
     display: none;
   }
   .form-success.show { display: block; animation: fadeUp 0.4s ease; }
+  .form-group label .req { color: #d32f2f; }
+  .form-group input.invalid,
+  .form-group textarea.invalid {
+    border-color: #d32f2f;
+    background: #fff5f5;
+  }
+
+  /* ---------- DONATION MODAL ---------- */
+  .donate-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 38, 71, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .donate-modal-overlay.open { opacity: 1; visibility: visible; }
+  .donate-modal {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 36px 32px 32px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(24px) scale(0.97);
+    transition: var(--transition);
+  }
+  .donate-modal-overlay.open .donate-modal { transform: translateY(0) scale(1); }
+  .donate-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    transition: var(--transition);
+  }
+  .donate-modal-close:hover { background: var(--gray-200); color: var(--primary); }
+  .donate-modal-head { text-align: center; margin-bottom: 24px; }
+  .donate-modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    font-size: 1.6rem;
+    box-shadow: var(--shadow-md);
+  }
+  .donate-modal-head h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 6px; }
+  .donate-modal-head p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.55; }
 
   /* ---------- FOOTER ---------- */
   footer {
@@ -1784,25 +1883,28 @@
     .hospital-visual { min-height: 360px; }
     .hospital-photo { min-height: 360px; }
   }
-  @media (max-width: 768px) {
+  @media (max-width: 1100px) {
     .hamburger { display: block; }
     .nav-links {
-      position: fixed;
-      top: 76px;
+      position: absolute;
+      top: 100%;
       left: 0;
       right: 0;
       background: var(--white);
       flex-direction: column;
-      padding: 20px;
+      align-items: stretch;
+      padding: 16px;
       gap: 4px;
       box-shadow: var(--shadow-md);
       transform: translateY(-150%);
       transition: transform 0.4s ease;
     }
     .nav-links.open { transform: translateY(0); }
-    .nav-links a { display: block; width: 100%; padding: 14px; }
+    .nav-links a { display: block; width: 100%; padding: 14px; text-align: center; }
     .nav-links a::after { display: none; }
-
+    .nav-cta { margin-top: 6px; }
+  }
+  @media (max-width: 768px) {
     .section { padding: 70px 0; }
     .section-head { margin-bottom: 40px; }
     .programs-grid { grid-template-columns: 1fr; }
@@ -1846,8 +1948,8 @@
 
 <!-- ========== TOP STRIP ========== -->
 <div class="top-strip">
-  <i class="fas fa-moon"></i>
-  10 Blessed Days of Dhul Hijjah Are Here —
+  <i class="fas fa-hand-holding-heart"></i>
+  Urgent: 36 Orphan Children Need Your Support in Sahiwal —
   <a href="#donate">Auto Donate Daily</a>
 </div>
 
@@ -1945,6 +2047,21 @@
       </div>
       <div class="program-card reveal">
         <div class="program-card-img-wrap">
+          <img src="images/bano-qabil-stadium.jpg" alt="Bano Qabil IT Training" class="program-card-img" loading="lazy">
+        </div>
+        <div class="program-card-body">
+          <div class="program-icon"><i class="fas fa-laptop-code"></i></div>
+          <h3>Bano Qabil — IT Training</h3>
+          <p>Free IT Centres in Sahiwal, Harappa & Chichawatni. App Dev, Web Design, AI, Cyber Security, Freelancing & more.</p>
+          <div class="program-stats">
+            <span><strong>15,000+</strong> Test Takers</span>
+            <span><strong>2,000+</strong> Graduates</span>
+          </div>
+          <a href="#donate" class="program-link">Empower a Student <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="program-card reveal">
+        <div class="program-card-img-wrap">
           <img src="images/education-children.jpg" alt="Sahiwal school children" class="program-card-img" loading="lazy">
         </div>
         <div class="program-card-body">
@@ -2016,21 +2133,6 @@
             <span><strong>2,430</strong> Qurbani Packs</span>
           </div>
           <a href="#donate" class="program-link">Join the Mission <i class="fas fa-arrow-right"></i></a>
-        </div>
-      </div>
-      <div class="program-card reveal">
-        <div class="program-card-img-wrap">
-          <img src="images/bano-qabil-stadium.jpg" alt="Bano Qabil IT Training" class="program-card-img" loading="lazy">
-        </div>
-        <div class="program-card-body">
-          <div class="program-icon"><i class="fas fa-laptop-code"></i></div>
-          <h3>Bano Qabil — IT Training</h3>
-          <p>Free IT Centres in Sahiwal, Harappa & Chichawatni. App Dev, Web Design, AI, Cyber Security, Freelancing & more.</p>
-          <div class="program-stats">
-            <span><strong>15,000+</strong> Test Takers</span>
-            <span><strong>2,000+</strong> Graduates</span>
-          </div>
-          <a href="#donate" class="program-link">Empower a Student <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
       <div class="program-card reveal">
@@ -2234,13 +2336,13 @@
       <p class="section-desc">Meet the dedicated individuals leading Al-Khidmat's mission in Sahiwal District.</p>
     </div>
 
-    <div class="leadership-photo reveal">
+    <div class="leadership-photo reveal" style="display:none;">
       <img src="images/leadership-group.jpg" alt="Al-Khidmat Foundation Sahiwal Leadership" loading="lazy">
       <div class="leadership-photo-cap">Al-Khidmat Sahiwal leadership at the Annual Donor Conference</div>
     </div>
 
     <div class="leadership-grid">
-      <div class="leader-card reveal">
+      <div class="leader-card reveal" style="display:none;">
         <div class="leader-avatar"><i class="fas fa-user-tie"></i></div>
         <h4>Tayyab Mehmood Baloch</h4>
         <div class="role">Patron / Sarparast</div>
@@ -2249,7 +2351,7 @@
       <div class="leader-card reveal">
         <div class="leader-avatar"><i class="fas fa-user-tie"></i></div>
         <h4>Dr. Anwar ul Haq Sheikh</h4>
-        <div class="role">President / Sadr</div>
+        <div class="role">President</div>
         <p>We salute the noble spirit and cooperation of every donor who stood with us during flood relief. Together we brought peace and hope to thousands.</p>
       </div>
       <div class="leader-card reveal">
@@ -2257,6 +2359,12 @@
         <h4>Malik Saif Ullah Khalid</h4>
         <div class="role">General Secretary</div>
         <p>Your partnership in this great mission is a source of pride for us. Your support brought light and hope into countless lives.</p>
+      </div>
+      <div class="leader-card reveal">
+        <div class="leader-avatar"><i class="fas fa-user-tie"></i></div>
+        <h4>Rana Zahid Ashraf</h4>
+        <div class="role">Finance Secretary</div>
+        <p>Every rupee you entrust to us is spent with honesty and care. Your generous contributions are transforming lives across Sahiwal, and for that we are deeply grateful.</p>
       </div>
     </div>
   </div>
@@ -2491,6 +2599,59 @@
     </div>
   </div>
 </section>
+
+<!-- ========== DONATION MODAL ========== -->
+<div class="donate-modal-overlay" id="donateModalOverlay" aria-hidden="true">
+  <div class="donate-modal" role="dialog" aria-modal="true" aria-labelledby="donateModalTitle">
+    <button class="donate-modal-close" id="donateModalClose" aria-label="Close">&times;</button>
+    <div class="donate-modal-head">
+      <div class="donate-modal-icon"><i class="fas fa-heart"></i></div>
+      <h3 id="donateModalTitle">Complete Your Donation</h3>
+      <p>Share your details and our team will reach out to help you complete your donation.</p>
+    </div>
+
+    <form id="donateForm" novalidate>
+      <!-- Web3Forms hidden fields — access key is injected from config in JS -->
+      <input type="hidden" name="access_key" id="donateAccessKey" value="">
+      <input type="hidden" name="subject" value="New Donation Pledge — Al-Khidmat Sahiwal Website">
+      <input type="hidden" name="from_name" value="Al-Khidmat Sahiwal Donations">
+      <input type="hidden" name="item" id="donateItem" value="">
+      <!-- Honeypot spam trap -->
+      <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div class="form-group">
+        <label for="donorName">Full Name <span class="req">*</span></label>
+        <input type="text" id="donorName" name="name" placeholder="Your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="donorPhone">Phone / WhatsApp Number <span class="req">*</span></label>
+        <input type="tel" id="donorPhone" name="phone" placeholder="+92 3XX XXXXXXX" required>
+      </div>
+      <div class="form-group">
+        <label for="donorAmount">Donation Amount (PKR) <span class="req">*</span></label>
+        <input type="number" id="donorAmount" name="amount" min="100" placeholder="Amount in PKR" required>
+      </div>
+      <div class="form-group">
+        <label for="donorProgram">Where Should Your Donation Go? <span class="req">*</span></label>
+        <select id="donorProgram" name="program" required>
+          <option value="" disabled selected>Please choose a cause to support</option>
+          <option value="Bano Qabil — IT Training">Bano Qabil — IT Training</option>
+          <option value="Community Services">Community Services</option>
+          <option value="Disaster Management">Disaster Management</option>
+          <option value="Education">Education</option>
+          <option value="General Donation">General Donation</option>
+          <option value="Health Services">Health Services</option>
+          <option value="Orphan Care (OFSP)">Orphan Care (OFSP)</option>
+          <option value="Volunteer With Us">Volunteer With Us</option>
+          <option value="WASH Program">WASH Program</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Donation</button>
+      <div class="form-success" id="donateSuccess"></div>
+    </form>
+  </div>
+</div>
 
 <!-- ========== CONTACT ========== -->
 <section class="section pattern-bg" id="contact">
@@ -2760,19 +2921,114 @@ customAmount.addEventListener('input', e => {
   updatePreview(e.target.value);
 });
 
-function handleDonate() {
+/* ---------- DONATION MODAL ---------- */
+/* Web3Forms access key controls WHICH inbox receives donation emails.
+   The recipient address is stored privately on Web3Forms, bound to this key.
+   To send donations to a different inbox, create a new key at web3forms.com
+   and replace the value below. */
+const DONATION_CONFIG = {
+  accessKey: '578c7752-3cbc-41f5-9211-7f9512fc066d'
+};
+
+const donateOverlay = document.getElementById('donateModalOverlay');
+const donateForm = document.getElementById('donateForm');
+const donorAmount = document.getElementById('donorAmount');
+const donateItemField = document.getElementById('donateItem');
+const donateSuccess = document.getElementById('donateSuccess');
+
+// Inject the access key into the hidden field
+document.getElementById('donateAccessKey').value = DONATION_CONFIG.accessKey;
+
+function openDonateModal() {
   const amount = parseInt(customAmount.value) || 0;
-  if (amount < 100) {
-    alert('Please enter a valid donation amount (minimum PKR 100).');
+  const activeBtn = document.querySelector('.amount-btn.active');
+  donorAmount.value = amount > 0 ? amount : '';
+  donateItemField.value = activeBtn ? activeBtn.dataset.label : 'General Donation';
+  document.getElementById('donorProgram').value = '';
+  donateSuccess.classList.remove('show');
+  donateForm.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  donateOverlay.classList.add('open');
+  donateOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('donorName').focus(), 200);
+}
+
+function closeDonateModal() {
+  donateOverlay.classList.remove('open');
+  donateOverlay.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+// Keep the "Donate ... Now" button as the modal trigger
+function handleDonate() {
+  openDonateModal();
+}
+
+document.getElementById('donateModalClose').addEventListener('click', closeDonateModal);
+donateOverlay.addEventListener('click', e => {
+  if (e.target === donateOverlay) closeDonateModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && donateOverlay.classList.contains('open')) closeDonateModal();
+});
+
+donateForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  // Validate all required fields
+  const name = document.getElementById('donorName');
+  const phone = document.getElementById('donorPhone');
+  const amount = donorAmount;
+  const program = document.getElementById('donorProgram');
+  let valid = true;
+
+  [name, phone, amount, program].forEach(field => {
+    if (!field.value.trim()) { field.classList.add('invalid'); valid = false; }
+    else { field.classList.remove('invalid'); }
+  });
+  if (amount.value && parseInt(amount.value) < 100) {
+    amount.classList.add('invalid'); valid = false;
+  }
+  if (!valid) {
+    donateSuccess.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please fill in all fields (minimum PKR 100).';
+    donateSuccess.style.background = 'rgba(211,47,47,0.1)';
+    donateSuccess.style.color = '#b71c1c';
+    donateSuccess.classList.add('show');
     return;
   }
-  const activeBtn = document.querySelector('.amount-btn.active');
-  const itemLabel = activeBtn ? activeBtn.dataset.label : '';
-  const message = itemLabel
-    ? `JazakAllah Khair! 💚\n\nYou are donating PKR ${amount.toLocaleString()} (${itemLabel}).\n\nPlease use the bank details on the right to complete your donation, then WhatsApp your receipt to 0317-0731646 for confirmation.`
-    : `JazakAllah Khair! 💚\n\nYou are donating PKR ${amount.toLocaleString()}.\n\nPlease use the bank details to complete your transfer.`;
-  alert(message);
-}
+
+  const submitBtn = donateForm.querySelector('.submit-btn');
+  const originalBtnHtml = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  submitBtn.disabled = true;
+
+  try {
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: new FormData(donateForm)
+    });
+    const data = await response.json();
+
+    if (data.success) {
+      donateSuccess.innerHTML = '<i class="fas fa-check-circle"></i> JazakAllah Khair! We\'ve received your details and will contact you shortly.';
+      donateSuccess.style.background = 'rgba(46,125,50,0.1)';
+      donateSuccess.style.color = 'var(--accent-dark)';
+      donateSuccess.classList.add('show');
+      donateForm.reset();
+      setTimeout(closeDonateModal, 3500);
+    } else {
+      throw new Error('submit failed');
+    }
+  } catch (error) {
+    donateSuccess.innerHTML = '<i class="fas fa-exclamation-circle"></i> Something went wrong. Please WhatsApp us at 0317-0731646.';
+    donateSuccess.style.background = 'rgba(211,47,47,0.1)';
+    donateSuccess.style.color = '#b71c1c';
+    donateSuccess.classList.add('show');
+  } finally {
+    submitBtn.innerHTML = originalBtnHtml;
+    submitBtn.disabled = false;
+  }
+});
 
 /* ---------- COPY TO CLIPBOARD ---------- */
 function copyText(text, btn) {
