@@ -1583,6 +1583,7 @@
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'><path d='M6 9l6 6 6-6'/></svg>");
     background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
   .form-group select:invalid { color: var(--gray-400); }
+  .h-captcha { margin-bottom: 16px; }
   .form-group input:focus,
   .form-group textarea:focus,
   .form-group select:focus {
@@ -2653,6 +2654,8 @@
         </select>
       </div>
 
+      <div class="h-captcha" data-captcha="true"></div>
+
       <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Donation</button>
       <div class="form-success" id="donateSuccess"></div>
     </form>
@@ -2707,7 +2710,7 @@
         <h3>Send Us a Message</h3>
         <p class="form-sub">Fill out the form and our team will reach out within 24 hours.</p>
 
-        <input type="hidden" name="access_key" value="578c7752-3cbc-41f5-9211-7f9512fc066d">
+        <input type="hidden" name="access_key" value="8be132f1-57e3-48d0-8344-5b372db075e3">
         <input type="hidden" name="subject" value="New message from Al-Khidmat Sahiwal website">
         <input type="hidden" name="from_name" value="Al-Khidmat Sahiwal Website">
         <input type="checkbox" name="botcheck" style="display:none">
@@ -2728,6 +2731,7 @@
           <label for="message">Your Message</label>
           <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
         </div>
+        <div class="h-captcha" data-captcha="true"></div>
         <button type="submit" class="submit-btn">
           <i class="fas fa-paper-plane"></i> Send Message
         </button>
@@ -2806,7 +2810,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© 2025 Al-Khidmat Foundation Sahiwal. All rights reserved.</span>
+      <span>© 2026 Al-Khidmat Foundation Sahiwal. All rights reserved.</span>
       <div class="bottom-links">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
@@ -2933,7 +2937,7 @@ customAmount.addEventListener('input', e => {
    To send donations to a different inbox, create a new key at web3forms.com
    and replace the value below. */
 const DONATION_CONFIG = {
-  accessKey: '578c7752-3cbc-41f5-9211-7f9512fc066d'
+  accessKey: '8be132f1-57e3-48d0-8344-5b372db075e3'
 };
 
 const donateOverlay = document.getElementById('donateModalOverlay');
@@ -3003,6 +3007,16 @@ donateForm.addEventListener('submit', async function (e) {
     return;
   }
 
+  // Require the hCaptcha to be solved before submitting
+  const donateCaptcha = donateForm.querySelector('[name="h-captcha-response"]');
+  if (!donateCaptcha || !donateCaptcha.value) {
+    donateSuccess.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please complete the "I am human" verification.';
+    donateSuccess.style.background = 'rgba(211,47,47,0.1)';
+    donateSuccess.style.color = '#b71c1c';
+    donateSuccess.classList.add('show');
+    return;
+  }
+
   const submitBtn = donateForm.querySelector('.submit-btn');
   const originalBtnHtml = submitBtn.innerHTML;
   submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
@@ -3021,6 +3035,7 @@ donateForm.addEventListener('submit', async function (e) {
       donateSuccess.style.color = 'var(--accent-dark)';
       donateSuccess.classList.add('show');
       donateForm.reset();
+      if (window.hcaptcha) { try { hcaptcha.reset(); } catch (e) {} }
       setTimeout(closeDonateModal, 3500);
     } else {
       throw new Error('submit failed');
@@ -3062,6 +3077,15 @@ if (contactForm) {
     const submitBtn = contactForm.querySelector('.submit-btn');
     const originalBtnHtml = submitBtn.innerHTML;
 
+    // Require the hCaptcha to be solved before submitting
+    const contactCaptcha = contactForm.querySelector('[name="h-captcha-response"]');
+    if (!contactCaptcha || !contactCaptcha.value) {
+      success.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please complete the "I am human" verification.';
+      success.classList.add('show');
+      setTimeout(() => success.classList.remove('show'), 6000);
+      return;
+    }
+
     // Show sending state
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     submitBtn.disabled = true;
@@ -3079,6 +3103,7 @@ if (contactForm) {
         success.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! Your message has been sent successfully.';
         success.classList.add('show');
         contactForm.reset();
+        if (window.hcaptcha) { try { hcaptcha.reset(); } catch (e) {} }
       } else {
         success.innerHTML = '<i class="fas fa-exclamation-circle"></i> Something went wrong. Please call us at 0317-0731646.';
         success.classList.add('show');
@@ -3134,6 +3159,9 @@ if (contactForm) {
   });
 })();
 </script>
+
+<!-- Web3Forms hCaptcha — renders the widgets marked data-captcha="true" using Web3Forms' managed hCaptcha keys and validates the token server-side -->
+<script src="https://web3forms.com/client/script.js" async defer></script>
 
 </body>
 </html>
