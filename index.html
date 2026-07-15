@@ -1652,16 +1652,17 @@
   .donate-modal {
     background: var(--white);
     border-radius: 18px;
-    padding: 36px 32px 32px;
+    padding: 26px 28px 24px;
     width: 100%;
     max-width: 440px;
     position: relative;
     box-shadow: var(--shadow-lg);
-    max-height: 90vh;
+    max-height: 92vh;
     overflow-y: auto;
     transform: translateY(24px) scale(0.97);
     transition: var(--transition);
   }
+  .donate-modal .form-group { margin-bottom: 13px; }
   .donate-modal-overlay.open .donate-modal { transform: translateY(0) scale(1); }
   .donate-modal-close {
     position: absolute;
@@ -1679,21 +1680,40 @@
     transition: var(--transition);
   }
   .donate-modal-close:hover { background: var(--gray-200); color: var(--primary); }
-  .donate-modal-head { text-align: center; margin-bottom: 24px; }
+  .donate-modal-head { text-align: center; margin-bottom: 16px; }
   .donate-modal-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 14px;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 10px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--accent), var(--accent-dark));
     color: var(--white);
     display: grid;
     place-items: center;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     box-shadow: var(--shadow-md);
   }
-  .donate-modal-head h3 { color: var(--primary); font-size: 1.4rem; margin-bottom: 6px; }
-  .donate-modal-head p { color: var(--gray-600); font-size: 0.9rem; line-height: 1.55; }
+  .donate-modal-head h3 { color: var(--primary); font-size: 1.25rem; margin-bottom: 4px; }
+  .donate-modal-head p { color: var(--gray-600); font-size: 0.85rem; line-height: 1.5; }
+
+  /* ---------- DONATION THANK-YOU SCREEN ---------- */
+  .donate-thankyou { text-align: center; padding: 12px 4px 6px; }
+  .donate-thankyou-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    font-size: 1.9rem;
+    box-shadow: var(--shadow-md);
+    animation: fadeUp 0.4s ease;
+  }
+  .donate-thankyou h3 { color: var(--primary); font-size: 1.5rem; margin-bottom: 10px; }
+  .donate-thankyou p { color: var(--gray-600); font-size: 0.94rem; line-height: 1.6; margin-bottom: 22px; }
+  .donate-thankyou .submit-btn { max-width: 200px; margin: 0 auto; }
 
   /* ---------- FOOTER ---------- */
   footer {
@@ -2611,7 +2631,7 @@
 <div class="donate-modal-overlay" id="donateModalOverlay" aria-hidden="true">
   <div class="donate-modal" role="dialog" aria-modal="true" aria-labelledby="donateModalTitle">
     <button class="donate-modal-close" id="donateModalClose" aria-label="Close">&times;</button>
-    <div class="donate-modal-head">
+    <div class="donate-modal-head" id="donateModalHead">
       <div class="donate-modal-icon"><i class="fas fa-heart"></i></div>
       <h3 id="donateModalTitle">Complete Your Donation</h3>
       <p>Share your details and our team will reach out to help you complete your donation.</p>
@@ -2659,6 +2679,14 @@
       <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> Submit Donation</button>
       <div class="form-success" id="donateSuccess"></div>
     </form>
+
+    <!-- Success screen (swaps in place of the form after submit) -->
+    <div class="donate-thankyou" id="donateThankyou" hidden>
+      <div class="donate-thankyou-icon"><i class="fas fa-check"></i></div>
+      <h3>JazakAllah Khair!</h3>
+      <p>We've received your donation details. Our team will contact you shortly to help you complete it.</p>
+      <button type="button" class="submit-btn" id="donateThankyouClose"><i class="fas fa-check"></i> Done</button>
+    </div>
   </div>
 </div>
 
@@ -2945,9 +2973,23 @@ const donateForm = document.getElementById('donateForm');
 const donorAmount = document.getElementById('donorAmount');
 const donateItemField = document.getElementById('donateItem');
 const donateSuccess = document.getElementById('donateSuccess');
+const donateModalHead = document.getElementById('donateModalHead');
+const donateThankyou = document.getElementById('donateThankyou');
 
 // Inject the access key into the hidden field
 document.getElementById('donateAccessKey').value = DONATION_CONFIG.accessKey;
+
+// Toggle between the form view and the thank-you view inside the modal
+function showDonateForm() {
+  donateModalHead.hidden = false;
+  donateForm.hidden = false;
+  donateThankyou.hidden = true;
+}
+function showDonateThankyou() {
+  donateModalHead.hidden = true;
+  donateForm.hidden = true;
+  donateThankyou.hidden = false;
+}
 
 function openDonateModal() {
   const amount = parseInt(customAmount.value) || 0;
@@ -2957,6 +2999,7 @@ function openDonateModal() {
   document.getElementById('donorProgram').value = '';
   donateSuccess.classList.remove('show');
   donateForm.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  showDonateForm();
   donateOverlay.classList.add('open');
   donateOverlay.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -2967,6 +3010,8 @@ function closeDonateModal() {
   donateOverlay.classList.remove('open');
   donateOverlay.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
+  // Reset back to the form view for next time (after the fade-out)
+  setTimeout(() => { donateForm.reset(); showDonateForm(); donateSuccess.classList.remove('show'); }, 350);
 }
 
 // Keep the "Donate ... Now" button as the modal trigger
@@ -2975,6 +3020,7 @@ function handleDonate() {
 }
 
 document.getElementById('donateModalClose').addEventListener('click', closeDonateModal);
+document.getElementById('donateThankyouClose').addEventListener('click', closeDonateModal);
 donateOverlay.addEventListener('click', e => {
   if (e.target === donateOverlay) closeDonateModal();
 });
@@ -3030,13 +3076,13 @@ donateForm.addEventListener('submit', async function (e) {
     const data = await response.json();
 
     if (data.success) {
-      donateSuccess.innerHTML = '<i class="fas fa-check-circle"></i> JazakAllah Khair! We\'ve received your details and will contact you shortly.';
-      donateSuccess.style.background = 'rgba(46,125,50,0.1)';
-      donateSuccess.style.color = 'var(--accent-dark)';
-      donateSuccess.classList.add('show');
+      // Swap the form out for the centered thank-you screen (reset happens while hidden)
+      donateSuccess.classList.remove('show');
+      showDonateThankyou();
       donateForm.reset();
       if (window.hcaptcha) { try { hcaptcha.reset(); } catch (e) {} }
-      setTimeout(closeDonateModal, 3500);
+      donateOverlay.querySelector('.donate-modal').scrollTop = 0;
+      setTimeout(closeDonateModal, 5000);
     } else {
       throw new Error('submit failed');
     }
