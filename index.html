@@ -1558,6 +1558,16 @@
     margin-bottom: 24px;
     font-size: 0.95rem;
   }
+  .contact-thankyou {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+  }
+  .contact-thankyou h3 { margin-bottom: 12px; }
+  .contact-thankyou p { color: var(--gray-600); font-size: 0.98rem; line-height: 1.6; max-width: 360px; }
   .form-group { margin-bottom: 18px; }
   .form-group label {
     display: block;
@@ -2720,7 +2730,7 @@
           <div class="contact-icon"><i class="fas fa-envelope"></i></div>
           <div>
             <h4>Email Us</h4>
-            <a href="mailto:alkhidmatfoundationsahiwal@gmail.com">alkhidmatfoundationsahiwal@gmail.com</a>
+            <a href="mailto:rmd@alkhidmatsahiwal.org">rmd@alkhidmatsahiwal.org</a>
           </div>
         </div>
 
@@ -2767,6 +2777,13 @@
           <i class="fas fa-check-circle"></i> Thank you! Your message has been sent successfully.
         </div>
       </form>
+
+      <!-- Success panel (swaps in place of the contact form after submit) -->
+      <div class="contact-form contact-thankyou" id="contactThankyou" hidden>
+        <div class="donate-thankyou-icon"><i class="fas fa-check"></i></div>
+        <h3>Message Sent!</h3>
+        <p>JazakAllah Khair — thank you for reaching out. Our team will get back to you within 24 hours.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2788,7 +2805,7 @@
         <div class="social-icons">
           <a href="https://www.facebook.com/AkfSwl" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
           <a href="https://wa.me/923170731646" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-          <a href="mailto:alkhidmatfoundationsahiwal@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+          <a href="mailto:rmd@alkhidmatsahiwal.org" aria-label="Email"><i class="fas fa-envelope"></i></a>
           <a href="tel:+923170731646" aria-label="Phone"><i class="fas fa-phone"></i></a>
         </div>
       </div>
@@ -2828,7 +2845,7 @@
         </div>
         <div class="footer-contact-item">
           <i class="fas fa-envelope"></i>
-          <span>alkhidmatfoundationsahiwal@gmail.com</span>
+          <span>rmd@alkhidmatsahiwal.org</span>
         </div>
         <div class="footer-contact-item">
           <i class="fas fa-clock"></i>
@@ -3146,10 +3163,14 @@ if (contactForm) {
       const data = await response.json();
 
       if (data.success) {
-        success.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! Your message has been sent successfully.';
-        success.classList.add('show');
+        // Reset (while it's about to be hidden) and swap the form out for the thank-you panel
         contactForm.reset();
         if (window.hcaptcha) { try { hcaptcha.reset(); } catch (e) {} }
+        const contactThankyou = document.getElementById('contactThankyou');
+        contactForm.hidden = true;
+        contactThankyou.hidden = false;
+        // Bring the form back after a while (it also re-appears on page refresh)
+        setTimeout(() => { contactThankyou.hidden = true; contactForm.hidden = false; }, 12000);
       } else {
         success.innerHTML = '<i class="fas fa-exclamation-circle"></i> Something went wrong. Please call us at 0317-0731646.';
         success.classList.add('show');
